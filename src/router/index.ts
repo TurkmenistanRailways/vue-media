@@ -8,6 +8,7 @@ import SearchView from '@/views/Search/SearchView.vue'
 import SearchM from '@/views/Search/SearchMovie.vue'
 import Music from '@/views/music/MusicView.vue'
 import MusicItemView from '@/views/music/MusicItemView.vue'
+import ScannerView from '@/views/scanner/ScannerView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -39,6 +40,11 @@ const router = createRouter({
       component: Login,
     },
     {
+      path: '/scanner',
+      name: 'scanner',
+      component: ScannerView,
+    },
+    {
       path: '/movies/:id',
       name: 'movie',
       component: Movie,
@@ -68,7 +74,8 @@ router.beforeEach(async to => {
     // make sure the user is authenticated
     !localStorage.getItem('token') &&
     // ❗️ Avoid an infinite redirect
-    to.name !== 'login'
+    to.name !== 'login' &&
+    to.name !== 'scanner'
   ) {
     // redirect the user to the login page
     return { name: 'login' }

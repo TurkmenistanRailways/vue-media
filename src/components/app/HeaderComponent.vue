@@ -138,7 +138,6 @@ const { isMobile } = useIsMobile()
 const categories = ref<TMovieCategory[]>([])
 const menuIsOpened = ref(false)
 const menu = ref<HTMLDivElement>()
-// const route = useRoute()
 const handleClickOutside = (event: MouseEvent) => {
   if (
     menuIsOpened.value &&
@@ -153,8 +152,10 @@ onMounted(async () => {
   document.addEventListener('click', handleClickOutside)
 
   try {
-    const res = await getMovieCategories()
-    categories.value = res.data
+    if (localStorage.getItem('token')) {
+      const res = await getMovieCategories()
+      categories.value = res.data
+    }
   } catch (err) {
     console.log(err)
   }

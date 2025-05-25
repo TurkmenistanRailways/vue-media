@@ -8,6 +8,11 @@ export const useMusicStore = defineStore('music', () => {
   const page = ref(1)
   const count = 10
   const hasMore = ref(true)
+  const delayLoading = () => {
+    setTimeout(() => {
+      loading.value = false
+    }, 1000)
+  }
   async function getMusic() {
     loading.value = true
     try {
@@ -31,10 +36,10 @@ export const useMusicStore = defineStore('music', () => {
       }
     } catch (err) {
       console.log(err)
-      loading.value = false
+      delayLoading()
       hasMore.value = false
     } finally {
-      loading.value = false
+      delayLoading()
     }
   }
 

@@ -12,4 +12,5 @@ export default {
   hide: 'Скрыть',
   show: 'Показать',
   search: 'Поиск',
+  scan_desc: 'Bilediňizdäki qrcode-y okatmagyňyzy haýyş edýäris!',
 }

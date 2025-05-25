@@ -12,4 +12,5 @@ export default {
   hide: 'Buk',
   show: 'Görkez',
   search: 'Gözleg',
+  scan_desc: 'Bilediňizdäki qrcode-y okatmagyňyzy haýyşt edýäris!',
 }

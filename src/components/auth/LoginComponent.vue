@@ -18,19 +18,23 @@ const submitHandler = async (e: Event) => {
     alert('Girizen maglumatlaryňyz Nädogry !!!')
   }
 }
+const onScanButton = (e: Event) => {
+  e.preventDefault()
+  router.push({ path: '/scanner' })
+}
 </script>
 <template>
   <form @submit="submitHandler">
     <div class="form-group">
       <label for="login">{{ $t('booking_number') }}</label>
-      <input v-model="login" type="text" id="text" />
+      <input v-model="login" type="text" id="booking" />
     </div>
     <div class="form-group">
       <label for="exampleInputPassword1">{{ $t('password') }}</label>
       <input
         v-model="password"
         :type="showPassword ? 'text' : 'password'"
-        id="text"
+        id="password"
       />
       <div
         @click="showPassword = !showPassword"
@@ -43,6 +47,7 @@ const submitHandler = async (e: Event) => {
     </div>
     <div class="form-group">
       <button type="submit">Içeri giriň</button>
+      <button @click="onScanButton" class="scanner-btn">Scan Qrcode</button>
     </div>
   </form>
 </template>
@@ -62,7 +67,7 @@ form {
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  gap: 5px;
+  gap: 3px;
 }
 .form-group > input {
   width: 100%;
@@ -102,6 +107,10 @@ form {
   justify-content: center;
   align-items: center;
   z-index: 4;
+}
+
+.form-group > .scanner-btn {
+  background-color: rgb(182, 185, 255);
 }
 
 .show_password_container > .show_password {

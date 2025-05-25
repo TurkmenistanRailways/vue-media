@@ -10,7 +10,7 @@ let observer: IntersectionObserver | null = null
 const createObserver = () => {
   const options = {
     root: null,
-    rootMargin: '0px',
+    rootMargin: '10px',
     threshold: 1.0, // Trigger when 100% of element is in view
   }
 
@@ -40,7 +40,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (observer) {
-    observer.disconnect() // Properly disconnect the observer on unmount
+    observer.disconnect()
     observer = null
   }
 })
@@ -59,7 +59,7 @@ onUnmounted(() => {
         class="load-trigger"
         v-if="!store.loading && store.hasMore"
       >
-        Loading more music...
+        <img src="/bars-scale-middle.svg" alt="" />
       </div>
     </div>
   </Wrapper>

@@ -503,7 +503,6 @@ watch(
       // ⛔ Catch 403 here
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       player.on(dashjs.MediaPlayer.events.ERROR, function (e: any) {
-        console.log(e, 'error in video')
         if (e?.error.data.response.status === 403) {
           player.reset()
           window.location.href = '/login'

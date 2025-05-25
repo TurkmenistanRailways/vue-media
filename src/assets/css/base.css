@@ -1,7 +1,8 @@
 /* color palette from <https://github.com/vuejs/theme> */
 @font-face {
   font-family: 'Poppins';
-  src: url('@/assets/fonts/Poppins/Poppins-Regular.ttf'),
+  src:
+    url('@/assets/fonts/Poppins/Poppins-Regular.ttf'),
     url('@/assets/fonts/Poppins/Poppins-Medium.ttf'),
     url('@/assets/fonts/Poppins/Poppins-SemiBold.ttf'),
     url('@/assets/fonts/Poppins/Poppins-Bold.ttf');
@@ -50,8 +51,8 @@
 
 body {
   background: var(--slate-950);
-  /* width: 100%;
-  height: 100vh; */
+  width: 100%;
+  height: 100vh;
 }
 
 html {
