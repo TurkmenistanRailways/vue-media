@@ -9,6 +9,7 @@ import SearchM from '@/views/Search/SearchMovie.vue'
 import Music from '@/views/music/MusicView.vue'
 import MusicItemView from '@/views/music/MusicItemView.vue'
 import ScannerView from '@/views/scanner/ScannerView.vue'
+import AuthCheck from '@/views/check/AuthCheck.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
+    },
+    {
+      path: '/auth',
+      name: 'authCheck',
+      component: AuthCheck,
     },
     {
       path: '/scanner',
@@ -75,6 +81,7 @@ router.beforeEach(async to => {
     !localStorage.getItem('token') &&
     // ❗️ Avoid an infinite redirect
     to.name !== 'login' &&
+    to.name !== 'authCheck' &&
     to.name !== 'scanner'
   ) {
     // redirect the user to the login page

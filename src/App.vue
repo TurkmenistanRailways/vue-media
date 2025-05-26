@@ -6,7 +6,13 @@ import Wrapper from './components/app/WrapperComponent.vue'
 
 <template>
   <Wrapper>
-    <Header v-if="$route.name !== 'login' && $route.name !== 'scanner'" />
+    <Header
+      v-if="
+        $route.name !== 'login' &&
+        $route.name !== 'scanner' &&
+        $route.name !== 'authCheck'
+      "
+    />
     <div class="outlet_container">
       <RouterView />
     </div>
