@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import AppLoading from '@/components/app/AppLoading.vue'
-import { signIn } from '@/services/auth'
+import { auth } from '@/services/auth'
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 onMounted(async () => {
-  const login = route.query.l?.toString()
-  const password = route.query.p?.toString()
-  if (login && password)
+  const token = route.query.q?.toString()
+  if (token) {
     try {
-      const res = await signIn({
-        login,
-        password,
-      })
+      const res = await auth(token)
       if (res.status === 200) {
         localStorage.setItem('token', res.data.token)
         router.push('/')
@@ -22,6 +18,7 @@ onMounted(async () => {
     } catch (err) {
       console.log(err, 'error')
     }
+  }
 })
 </script>
 

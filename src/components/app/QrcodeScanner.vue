@@ -15,21 +15,18 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue'
 import { Html5Qrcode } from 'html5-qrcode'
 import { useRouter } from 'vue-router'
-import type { TQrResult } from '@/types/common'
-import { signIn } from '@/services/auth'
+import { auth } from '@/services/auth'
 
 const qrCodeRegion = ref<HTMLDivElement | null>(null)
 const qrCodeResult = ref<string | null>(null)
 let html5QrCode: Html5Qrcode | null = null
 const router = useRouter()
 const qrCodeSuccessCallback = async (decodedText: string) => {
-  const parsedObj: TQrResult = JSON.parse(decodedText)
-  if (parsedObj.d.m.p && parsedObj.d.m.l) {
+  const value: string = JSON.parse(decodedText)
+  const token = value.split('=')[1]
+  if (token) {
     try {
-      const res = await signIn({
-        login: parsedObj.d.m.l,
-        password: parsedObj.d.m.p,
-      })
+      const res = await auth(token)
       if (res.status === 200) {
         localStorage.setItem('token', res.data.token)
         stopScanner()
