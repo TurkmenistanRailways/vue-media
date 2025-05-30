@@ -18,10 +18,6 @@ const submitHandler = async (e: Event) => {
     alert('Girizen maglumatlaryňyz Nädogry !!!')
   }
 }
-const onScanButton = (e: Event) => {
-  e.preventDefault()
-  router.push({ path: '/scanner' })
-}
 </script>
 <template>
   <form @submit="submitHandler">
@@ -47,7 +43,6 @@ const onScanButton = (e: Event) => {
     </div>
     <div class="form-group">
       <button type="submit">Içeri giriň</button>
-      <button @click="onScanButton" class="scanner-btn">Scan Qrcode</button>
     </div>
   </form>
 </template>

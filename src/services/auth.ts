@@ -6,6 +6,6 @@ export const signIn = async (body: TPost): Promise<AxiosResponse<TSignInRes>> =>
   api.post('/auth/sign-in', body)
 
 export const auth = async (token: string): Promise<AxiosResponse<TSignInRes>> =>
-  api.post('/auth/auth', {
+  api.post('/auth', {
     q: token,
   })
