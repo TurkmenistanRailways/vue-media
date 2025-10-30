@@ -49,6 +49,7 @@ const onScanButton = (e: Event) => {
       <button type="submit">Içeri giriň</button>
       <button @click="onScanButton" class="scanner-btn">Scan Qrcode</button>
     </div>
+    <p class="version-text">v 20251101200</p>
   </form>
 </template>
 
@@ -119,6 +120,15 @@ form {
 
 input:-webkit-autofill {
   background-color: var(--slate-800) !important;
+}
+
+.version-text {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  color: var(--slate-400);
+  opacity: 0.8;
+  user-select: none;
 }
 
 @media screen and (min-width: 900px) {
