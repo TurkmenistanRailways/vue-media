@@ -18,10 +18,10 @@ const submitHandler = async (e: Event) => {
     alert('Girizen maglumatlaryňyz Nädogry !!!')
   }
 }
-const onScanButton = (e: Event) => {
-  e.preventDefault()
-  router.push({ path: '/scanner' })
-}
+// const onScanButton = (e: Event) => {
+//   e.preventDefault()
+//   router.push({ path: '/scanner' })
+// }
 </script>
 <template>
   <form @submit="submitHandler">
@@ -47,7 +47,7 @@ const onScanButton = (e: Event) => {
     </div>
     <div class="form-group">
       <button type="submit">Içeri giriň</button>
-      <button @click="onScanButton" class="scanner-btn">Scan Qrcode</button>
+      <!-- <button @click="onScanButton" class="scanner-btn">Scan Qrcode</button> -->
     </div>
     <p class="version-text">v 20251101200</p>
   </form>
@@ -110,9 +110,9 @@ form {
   z-index: 4;
 }
 
-.form-group > .scanner-btn {
+/* .form-group > .scanner-btn {
   background-color: rgb(182, 185, 255);
-}
+} */
 
 .show_password_container > .show_password {
   padding-right: 3px;
@@ -123,9 +123,12 @@ input:-webkit-autofill {
 }
 
 .version-text {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
   text-align: center;
-  font-size: 0.8rem;
-  margin-top: 1rem;
+  font-size: 1rem;
   color: var(--slate-400);
   opacity: 0.8;
   user-select: none;
