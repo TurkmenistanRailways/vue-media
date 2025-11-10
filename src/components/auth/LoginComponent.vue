@@ -6,6 +6,9 @@ const login = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const router = useRouter()
+
+const appVersion = import.meta.env.VITE_APP_VERSION
+
 const submitHandler = async (e: Event) => {
   e.preventDefault()
   try {
@@ -49,7 +52,7 @@ const submitHandler = async (e: Event) => {
       <button type="submit">Içeri giriň</button>
       <!-- <button @click="onScanButton" class="scanner-btn">Scan Qrcode</button> -->
     </div>
-    <p class="version-text">v 20251101200</p>
+    <p class="version-text">v {{ appVersion }}</p>
   </form>
 </template>
 
