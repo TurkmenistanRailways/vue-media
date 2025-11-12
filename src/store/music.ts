@@ -1,54 +1,36 @@
+import { usePaginatedCollection } from '@/composables/usePaginatedCollection'
 import { getMusicAll } from '@/services/music'
-import type { TMusicAll } from '@/types/music'
+import type { TMusic } from '@/types/music'
+import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+
 export const useMusicStore = defineStore('music', () => {
-  const music = ref<TMusicAll>()
-  const loading = ref<boolean>(false)
-  const page = ref(1)
-  const count = 10
-  const hasMore = ref(true)
-  const delayLoading = () => {
-    setTimeout(() => {
-      loading.value = false
-    }, 1000)
-  }
-  async function getMusic() {
-    loading.value = true
-    try {
-      const res = await getMusicAll(page.value, count)
-      if (page.value === 1) {
-        music.value = res.data
-        if (res.data.total > page.value * count) {
-          hasMore.value = true
-          page.value += 1
-        } else {
-          hasMore.value = false
-        }
-      } else {
-        music.value?.musics.push(...res.data.musics)
-        if (res.data.total > page.value * count) {
-          hasMore.value = true
-          page.value += 1
-        } else {
-          hasMore.value = false
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      delayLoading()
-      hasMore.value = false
-    } finally {
-      delayLoading()
+  const pagination = usePaginatedCollection<TMusic>(async (page, count) => {
+    const { data } = await getMusicAll(page, count)
+    return {
+      items: data.musics,
+      total: data.total,
     }
-  }
+  })
+
+  const tracks = computed(() => pagination.items.value)
+  const total = computed(() => pagination.total.value)
+  const isLoading = computed(() => pagination.loading.value)
+  const hasMore = computed(() => pagination.hasMore.value)
+  const isInitialLoading = computed(() => pagination.isInitialLoad.value)
+
+  const loadInitial = () => pagination.refresh()
+  const loadMore = () => pagination.loadNext()
+  const reset = () => pagination.reset()
 
   return {
-    loading,
-    music,
-    page,
-    count,
+    tracks,
+    total,
+    isLoading,
+    isInitialLoading,
     hasMore,
-    getMusic,
+    loadInitial,
+    loadMore,
+    reset,
   }
 })
