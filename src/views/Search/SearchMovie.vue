@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import AppLoading from '@/components/app/AppLoading.vue'
+import MovieItem from '@/components/movie/MovieItem.vue'
 import { useMovieStore } from '@/store/movie'
 import type { TLang } from '@/types/common'
-import { watch } from 'vue'
-import MovieItem from '@/components/movie/MovieItem.vue'
+import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import AppLoading from '@/components/app/AppLoading.vue'
+
 const route = useRoute()
 const store = useMovieStore()
-const data = {
+
+const heading = {
   id: 1,
   title: {
     tk: 'Gözleg sözüňiz',
@@ -15,32 +17,50 @@ const data = {
   } as TLang,
 }
 
+const headingTitle = computed(
+  () => heading.title[$i18n.locale as keyof TLang],
+)
+
+const activeQuery = computed(() =>
+  typeof route.params.search === 'string' ? route.params.search.trim() : '',
+)
+
 watch(
-  () => route.params.search,
-  newVal => {
-    store.movieNotFound = false
-    store.getMoviesBySearch(newVal as string)
+  activeQuery,
+  query => {
+    if (query) {
+      void store.searchMovies(query)
+    } else {
+      store.clearSearch()
+    }
   },
   { immediate: true },
 )
 </script>
+
 <template>
-  <AppLoading v-if="store.loadingSearched"></AppLoading>
-  <div v-if="store.moviesBySearch.length > 0" class="container">
-    <h1>
-      {{ data.title[$i18n.locale as keyof TLang] }} "{{ $route.params.search }}"
+  <AppLoading v-if="store.isSearching" />
+  <div v-else class="container">
+    <h1 v-if="store.searchHasResults && activeQuery">
+      {{ headingTitle }} "{{ activeQuery }}"
     </h1>
-    <div class="movies_by_search">
+    <div
+      v-if="store.searchHasResults && activeQuery"
+      class="movies_by_search"
+    >
       <MovieItem
-        v-for="movie in store.moviesBySearch"
+        v-for="movie in store.searchResults"
         :key="movie.id"
         :movie="movie"
         class="movie-item"
       />
     </div>
-  </div>
-  <div v-if="store.movieNotFound">
-    <h1 class="not_found">{{ $t('movie_not_found') }}</h1>
+    <div v-else-if="activeQuery" class="empty_state">
+      <p>{{ $t('movie_not_found') }}</p>
+    </div>
+    <div v-else class="empty_state">
+      <p>{{ $t('search') }}</p>
+    </div>
   </div>
 </template>
 
@@ -61,8 +81,11 @@ h1 {
   padding-block: 1rem;
   font-size: 1.2rem;
 }
-.not_found {
-  text-align: center;
+.empty_state {
+  display: grid;
+  place-items: center;
+  padding: 2rem 0;
+  color: var(--slate-300);
 }
 
 @media screen and (min-width: 1120px) and (max-width: 1680px) {

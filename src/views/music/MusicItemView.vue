@@ -82,31 +82,33 @@ const documentMouseMoveHandler = (e: MouseEvent) => {
 }
 
 const prevHandler = () => {
-  const findIndex =
-    store.music?.musics.findIndex(
-      item => item.id.toString() === route.params.id,
-    ) || 1
-  if (store.music?.musics.length) {
-    const prevIndex =
-      findIndex === 0 ? store.music?.musics.length - 1 : findIndex - 1
-    const prevMusic = store.music?.musics[prevIndex]
-    if (prevMusic.path) {
-      router.push({ name: 'music-id', params: { id: prevMusic.id } })
-    }
+  const tracks = store.tracks
+  if (!tracks.length) {
+    return
+  }
+
+  const currentIndex =
+    tracks.findIndex(item => item.id.toString() === route.params.id) || 0
+  const prevIndex = currentIndex === 0 ? tracks.length - 1 : currentIndex - 1
+  const prevTrack = tracks[prevIndex]
+
+  if (prevTrack?.path) {
+    router.push({ name: 'music-id', params: { id: prevTrack.id } })
   }
 }
 const nextHandler = () => {
-  const findIndex =
-    store.music?.musics.findIndex(
-      item => item.id.toString() === route.params.id,
-    ) || 0
-  if (store.music?.musics.length) {
-    const nextIndex =
-      findIndex === store.music?.musics.length - 1 ? 0 : findIndex + 1
-    const nextMusic = store.music?.musics[nextIndex]
-    if (nextMusic.path) {
-      router.push({ name: 'music-id', params: { id: nextMusic.id } })
-    }
+  const tracks = store.tracks
+  if (!tracks.length) {
+    return
+  }
+
+  const currentIndex =
+    tracks.findIndex(item => item.id.toString() === route.params.id) || 0
+  const nextIndex = currentIndex === tracks.length - 1 ? 0 : currentIndex + 1
+  const nextTrack = tracks[nextIndex]
+
+  if (nextTrack?.path) {
+    router.push({ name: 'music-id', params: { id: nextTrack.id } })
   }
 }
 
@@ -121,6 +123,10 @@ watch(
 )
 
 onMounted(() => {
+  if (!store.tracks.length) {
+    void store.loadInitial()
+  }
+
   if (audio_ref.value) {
     audio_ref.value.addEventListener('loadedmetadata', () => {
       totalAudioDuration.value = formatDuration(audio_ref.value?.duration)

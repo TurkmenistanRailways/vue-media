@@ -13,4 +13,5 @@ export default {
   show: 'Показать',
   search: 'Поиск',
   scan_desc: 'Bilediňizdäki qrcode-y okatmagyňyzy haýyş edýäris!',
+  empty_list: 'Список пуст',
 }

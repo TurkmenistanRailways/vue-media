@@ -17,14 +17,14 @@ export const getMovieById = async (
 export const getSubCatById = async (
   id: string,
 ): Promise<AxiosResponse<TMovieCategory>> =>
-  api.get<TMovieCategory>(`categories/sub/${id}`)
+  api.get<TMovieCategory>(`/categories/sub/${id}`)
 
 export const getMoviesByCatId = async (
   id: string,
   page: number,
   count: number,
 ): Promise<AxiosResponse<TMoviesBySubCatId>> =>
-  api.get<TMoviesBySubCatId>(`/movies/sub/${id}?page=${page}&count=${count}`)
+  api.get<TMoviesBySubCatId>(`/movies/sub/${id}`, { params: { page, count } })
 
 export const getHomePageMovies = async (): Promise<
   AxiosResponse<TMoviesHomePage>
@@ -37,4 +37,4 @@ export const getMovieCategories = async (): Promise<
 export const getSearchedMovies = async (
   searchValue: string,
 ): Promise<AxiosResponse<TMovie[]>> =>
-  api.get<TMovie[]>(`/movies/search/${searchValue}`)
+  api.get<TMovie[]>('/movies/search/' + searchValue)

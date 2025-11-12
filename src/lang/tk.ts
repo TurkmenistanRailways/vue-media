@@ -13,4 +13,5 @@ export default {
   show: 'Görkez',
   search: 'Gözleg',
   scan_desc: 'Bilediňizdäki qrcode-y okatmagyňyzy haýyşt edýäris!',
+  empty_list: 'Sanaw boş',
 }

@@ -1,82 +1,87 @@
 <script setup lang="ts">
-import { useMovieStore } from '@/store/movie'
 import MovieItem from '@/components/movie/MovieItem.vue'
-import { onMounted, ref, onUnmounted, watch } from 'vue'
+import { useInfiniteScroll } from '@/composables/useInfiniteScroll'
+import { useMovieStore } from '@/store/movie'
 import type { TLang } from '@/types/common'
 import type { TMovieCategory } from '@/types/movie'
-const store = useMovieStore()
-const loadTrigger = ref(null)
-let observer: IntersectionObserver | null = null
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   id: string
-  data: TMovieCategory
+  data?: TMovieCategory
 }>()
-// Intersection Observer for infinite scrolling
-const createObserver = () => {
-  const options = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 1.0, // Trigger when 100% of element is in view
+
+const store = useMovieStore()
+const { locale } = useI18n()
+
+const isScrollEnabled = computed(
+  () => store.categoryHasMore && !store.isCategoryLoading,
+)
+
+const { target: loadTrigger } = useInfiniteScroll(
+  () => {
+    if (!store.isCategoryLoading) {
+      void store.loadMoreCategoryMovies()
+    }
+  },
+  {
+    threshold: 0.25,
+    isEnabled: isScrollEnabled,
+  },
+)
+
+const heading = computed<TLang | undefined>(() => {
+  if (props.data) {
+    return props.data.title
+  }
+  return store.selectedCategory?.title
+})
+
+const resolvedHeading = computed(() => {
+  if (!heading.value) {
+    return ''
   }
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && store.hasMore && !store.loadingForPaginated) {
-        store.fetchMoviesByIdWithPagination(props.id as string)
-      }
-    })
-  }, options)
-
-  if (loadTrigger.value) {
-    observer.observe(loadTrigger.value)
-  }
-}
-
-// Watch for the element reference and start observing once it’s available
-watch(loadTrigger, newVal => {
-  if (newVal) createObserver()
+  return heading.value[locale.value as keyof TLang]
 })
 
 watch(
   () => props.id,
-  newVal => {
-    if (newVal) {
-      store.page = 1
-      store.hasMore = true
-      store.fetchMoviesByIdWithPagination(props.id as string)
+  id => {
+    if (id) {
+      void store.selectCategory(id)
     }
   },
   { immediate: true },
 )
-
-onMounted(() => {
-  createObserver()
-})
-
-onUnmounted(() => {
-  if (observer) {
-    observer.disconnect() // Properly disconnect the observer on unmount
-    observer = null
-  }
-})
 </script>
 
 <template>
-  <div v-if="store.moviesWithScrollPagination" class="container">
-    <h1>{{ data?.title[$i18n.locale as keyof TLang] }}</h1>
-    <div class="movie_list">
+  <div class="container" v-if="resolvedHeading || store.categoryMovies.length">
+    <h1 v-if="resolvedHeading">{{ resolvedHeading }}</h1>
+    <div v-if="store.categoryMovies.length" class="movie_list">
       <MovieItem
-        v-for="movie in store.moviesWithScrollPagination.movies"
+        v-for="movie in store.categoryMovies"
         :key="movie.id"
         :movie="movie"
         class="movie-item"
       />
-      <div
-        ref="loadTrigger"
-        class="load-trigger"
-        v-if="!store.loadingSubCatId && store.hasMore"
-      ></div>
+    </div>
+    <div v-else class="placeholder">
+      <img
+        v-if="store.isCategoryLoading || store.isCategoryInitialLoading"
+        src="/bars-scale-middle.svg"
+        alt="Loading"
+      />
+      <p v-else>{{ $t('empty_list') }}</p>
+    </div>
+    <div v-if="store.categoryHasMore" ref="loadTrigger" class="load-trigger">
+      <img
+        v-if="store.isCategoryLoading"
+        src="/bars-scale-middle.svg"
+        alt="Loading"
+      />
     </div>
   </div>
 </template>
@@ -111,6 +116,13 @@ h1 {
 .load-trigger {
   color: white;
   text-align: center;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  padding: 2rem 0;
+  color: var(--slate-300);
 }
 
 @media screen and (min-width: 1120px) and (max-width: 1553px) {
